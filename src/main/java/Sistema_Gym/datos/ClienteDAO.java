@@ -24,7 +24,7 @@ public class ClienteDAO implements IClienteDAO{
             while(rs.next()){
                 var cliente = new Cliente();
                 cliente.setDni(rs.getInt("dni"));
-                cliente.setNombre(rs.getNString("nombre"));
+                cliente.setNombre(rs.getString("nombre"));
                 cliente.setApellido(rs.getString("apellido"));
                 cliente.setTelefono(rs.getInt("telefono"));
                 cliente.setMembresia(rs.getInt("membresia"));
@@ -79,10 +79,28 @@ public class ClienteDAO implements IClienteDAO{
     public boolean agregarCliente(Cliente cliente) {
 
         PreparedStatement ps;
-        Connection con = getConexion();
+        Connection con = Conexion.getConexion();
         String sql = "INSERT INTO cliente(dni, nombre, apellido, telefono, membresia) "
-                + " VALUES(?, ?, ?, ?, ?)"
-
+                + " VALUES(?, ?, ?, ?, ?)"; // ? son parametros posicionales van en el orden de los datos que spñicitamos
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, cliente.getDni());          // int
+            ps.setString(2, cliente.getNombre());    // String ✅
+            ps.setString(3, cliente.getApellido());  // String ✅
+            ps.setInt(4, cliente.getTelefono());     // int
+            ps.setInt(5, cliente.getMembresia());    // int
+            ps.execute();
+            return true;
+        }catch (Exception e){
+            System.out.println("ERROR al agregar cliente: " + e.getMessage());
+        }
+        finally {
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("ERROR al cerrar conexion: " + e.getMessage());
+            }
+        }
         return false;
     }
 
@@ -99,18 +117,36 @@ public class ClienteDAO implements IClienteDAO{
     public static void main(String[] args) {
         IClienteDAO clienteDao = new ClienteDAO();
 
-       //Listar Clientes
-//        System.out.println("*** Listar Clientes ***");
-//        var clientes = clienteDao.listarClientes();
-//        clientes.forEach(System.out::println);
+
 
         //BUSCAR POR DNI
-        var cliente1 = new Cliente(35189384);
-        System.out.println("clientes antes de la busqeda: " + cliente1);
-        var encontrado = clienteDao.buscarClientePorDni(cliente1);
-        if(encontrado)
-            System.out.println("* Cliente encontrado: " + cliente1);
+//        var cliente1 = new Cliente(35189384);
+//        System.out.println("clientes antes de la busqeda: " + cliente1);
+//        var encontrado = clienteDao.buscarClientePorDni(cliente1);
+//        if(encontrado)
+//            System.out.println("* Cliente encontrado: " + cliente1);
+//        else
+//            System.out.println("No se encontro cliente: " + cliente1.getDni());
+
+        //AGREGAR CLIENTE
+        var nuevoCliente = new Cliente(
+                Integer.parseInt("35147216"),
+                "Carlos",
+                "Figueroa",
+                Integer.parseInt("123456789"),
+                Integer.parseInt("250")
+        );
+
+        var agregado = clienteDao.agregarCliente(nuevoCliente);
+        if (agregado)
+            System.out.println("Cliente agregado: " + nuevoCliente);
         else
-            System.out.println("No se encontro cliente: " + cliente1.getDni());
+            System.out.println("No se agregó el cliente: " + nuevoCliente);
+
+
+        //Listar Clientes
+        System.out.println("*** Listar Clientes ***");
+        var clientes = clienteDao.listarClientes();
+        clientes.forEach(System.out::println);
     }
 }
