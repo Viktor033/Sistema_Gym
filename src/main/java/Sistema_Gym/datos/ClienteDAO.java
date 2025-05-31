@@ -1,0 +1,116 @@
+package Sistema_Gym.datos;
+
+import Sistema_Gym.conexion.Conexion;
+import Sistema_Gym.dominio.Cliente;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClienteDAO implements IClienteDAO{
+
+//LISTAR CLIENTES
+    @Override
+    public List<Cliente> listarClientes() {
+        List<Cliente> clientes = new ArrayList<>();
+        PreparedStatement ps;
+        ResultSet rs;
+        Connection con = Conexion.getConexion();
+        var sql = "SELECT * FROM cliente ORDER BY dni";
+        try{
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                var cliente = new Cliente();
+                cliente.setDni(rs.getInt("dni"));
+                cliente.setNombre(rs.getNString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setTelefono(rs.getInt("telefono"));
+                cliente.setMembresia(rs.getInt("membresia"));
+                clientes.add(cliente);
+            }
+        }catch (Exception e){
+            System.out.println("ERROR al listtar Clientes" + e.getMessage());
+        }
+        finally {
+            try {
+                con.close();
+            }catch (Exception e){
+                System.out.println("ERROR al cerrar conexion: " + e.getMessage());
+            }
+        }
+        return clientes;
+    }
+
+// BUSCAR CLIENTE POR DNI
+    @Override
+    public boolean buscarClientePorDni(Cliente cliente) {
+        PreparedStatement ps;
+        ResultSet rs;
+        var con = Conexion.getConexion();
+        var sql = "SELECT * FROM cliente WHERE dni = ?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, cliente.getDni());
+            rs = ps.executeQuery();
+            if(rs.next()){
+                cliente.setNombre(rs.getString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setTelefono(rs.getInt("telefono"));
+                cliente.setMembresia(rs.getInt("membresia"));
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("ERROR al recuperar cliente por dni: " + e.getMessage());
+        }
+        finally {
+            try{
+                con.close();
+            }catch(Exception e){
+                System.out.println("ERROR al cerrar conexion: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
+//AGREGAR CLIENTE
+    @Override
+    public boolean agregarCliente(Cliente cliente) {
+
+        PreparedStatement ps;
+        Connection con = getConexion();
+        String sql = "INSERT INTO cliente(dni, nombre, apellido, telefono, membresia) "
+                + " VALUES(?, ?, ?, ?, ?)"
+
+        return false;
+    }
+
+    @Override
+    public boolean modificarCliente(Cliente cliente) {
+        return false;
+    }
+
+    @Override
+    public boolean eliminarCliente(Cliente cliente) {
+        return false;
+    }
+
+    public static void main(String[] args) {
+        IClienteDAO clienteDao = new ClienteDAO();
+
+       //Listar Clientes
+//        System.out.println("*** Listar Clientes ***");
+//        var clientes = clienteDao.listarClientes();
+//        clientes.forEach(System.out::println);
+
+        //BUSCAR POR DNI
+        var cliente1 = new Cliente(35189384);
+        System.out.println("clientes antes de la busqeda: " + cliente1);
+        var encontrado = clienteDao.buscarClientePorDni(cliente1);
+        if(encontrado)
+            System.out.println("* Cliente encontrado: " + cliente1);
+        else
+            System.out.println("No se encontro cliente: " + cliente1.getDni());
+    }
+}
