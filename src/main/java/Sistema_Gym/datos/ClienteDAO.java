@@ -109,12 +109,12 @@ public class ClienteDAO implements IClienteDAO {
         var sql = "UPDATE cliente SET nombre=?, apellido=?, telefono=?, membresia=? " +
                 " WHERE dni = ?";
         try{
-           ps = con.prepareStatement(sql);
-            ps.setString(2, cliente.getNombre());
-            ps.setString(3, cliente.getApellido());
-            ps.setInt(4, cliente.getTelefono());
-            ps.setInt(5, cliente.getMembresia());
-            ps.setInt(6, cliente, getDni());
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellido());
+            ps.setInt(3, cliente.getTelefono());
+            ps.setInt(4, cliente.getMembresia());
+            ps.setInt(5, cliente. getDni());
             ps.execute();
             return true;
         }catch (Exception e){
@@ -130,8 +130,27 @@ public class ClienteDAO implements IClienteDAO {
         return false;
     }
 
+    //Eliminar cliente
     @Override
     public boolean eliminarCliente(Cliente cliente) {
+        PreparedStatement ps;
+        Connection con = Conexion.getConexion();;
+        String sql = "DELETE FROM cliente WHERE dni = ?";
+        try{
+           ps = con.prepareStatement(sql);
+           ps.setInt(1, cliente.getDni());
+           ps.execute();
+           return true;
+        }catch (Exception e){
+            System.out.println("ERROR al eliminar cliente: " + e.getMessage());
+        }
+        finally {
+            try{
+                con.close();
+            }catch (Exception e){
+                System.out.println("ERROR al cerrar conexion: " + e.getMessage());
+            }
+        }
         return false;
     }
 
@@ -150,19 +169,35 @@ public class ClienteDAO implements IClienteDAO {
 //            System.out.println("No se encontro cliente: " + cliente1.getDni());
 
         //AGREGAR CLIENTE
-        var nuevoCliente = new Cliente(
-                Integer.parseInt("35147216"),
-                "Carlos",
-                "Figueroa",
-                Integer.parseInt("123456789"),
-                Integer.parseInt("250")
-        );
+//        var nuevoCliente = new Cliente(
+//                Integer.parseInt("35147216"),
+//                "Carlos",
+//                "Figueroa",
+//                Integer.parseInt("123456789"),
+//                Integer.parseInt("250")
+//        );
 
-        var agregado = clienteDao.agregarCliente(nuevoCliente);
-        if (agregado)
-            System.out.println("Cliente agregado: " + nuevoCliente);
+//        var agregado = clienteDao.agregarCliente(nuevoCliente);
+//        if (agregado)
+//            System.out.println("Cliente agregado: " + nuevoCliente);
+//        else
+//            System.out.println("No se agregó el cliente: " + nuevoCliente);
+
+        //Modificarcliente
+//        var modificarCliente = new Cliente(35147216, "Robelto", "Oltega", 34569874, 5000 );
+//        var modificado = clienteDao.modificarCliente(modificarCliente);
+//        if(modificado)
+//            System.out.println("Cliente modificado: " + modificarCliente);
+//        else
+//            System.out.println("No se modifico cliente: " + modificarCliente);
+
+        //Eliminar Cliente
+        var clienteEliminar = new Cliente(35147216);
+        var eliminado = clienteDao.eliminarCliente(clienteEliminar);
+        if(eliminado)
+            System.out.println("cliente ELIMINADO: " + clienteEliminar);
         else
-            System.out.println("No se agregó el cliente: " + nuevoCliente);
+            System.out.println("NO se elimino Cliente: " + clienteEliminar);
 
         //Listar Clientes
         System.out.println("*** Listar Clientes ***");
