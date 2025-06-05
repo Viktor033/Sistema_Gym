@@ -6,7 +6,7 @@ public class Cliente {
     private int dni;
     private String nombre;
     private String apellido;
-    private int telefono;
+    private String telefono;
     private int membresia;
 
 
@@ -17,14 +17,14 @@ public class Cliente {
         this.dni = dni;
     }
 
-    public Cliente(String nombre, String apellido, int telefono, int membresia) {
+    public Cliente(String nombre, String apellido, String telefono, int membresia) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
         this.membresia = membresia;
     }
 
-    public Cliente(int dni, String nombre, String apellido, int telefono, int membresia) {
+    public Cliente(int dni, String nombre, String apellido, String telefono, int membresia) {
         this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -56,11 +56,11 @@ public class Cliente {
         this.apellido = apellido;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 

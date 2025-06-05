@@ -26,7 +26,7 @@ public class ClienteDAO implements IClienteDAO {
                 cliente.setDni(rs.getInt("dni"));
                 cliente.setNombre(rs.getString("nombre"));
                 cliente.setApellido(rs.getString("apellido"));
-                cliente.setTelefono(rs.getInt("telefono"));
+                cliente.setTelefono(rs.getString("telefono"));
                 cliente.setMembresia(rs.getInt("membresia"));
                 clientes.add(cliente);
             }
@@ -56,7 +56,7 @@ public class ClienteDAO implements IClienteDAO {
             if (rs.next()) {
                 cliente.setNombre(rs.getString("nombre"));
                 cliente.setApellido(rs.getString("apellido"));
-                cliente.setTelefono(rs.getInt("telefono"));
+                cliente.setTelefono(rs.getString("telefono"));
                 cliente.setMembresia(rs.getInt("membresia"));
                 return true;
             }
@@ -85,7 +85,7 @@ public class ClienteDAO implements IClienteDAO {
             ps.setInt(1, cliente.getDni());
             ps.setString(2, cliente.getNombre());
             ps.setString(3, cliente.getApellido());
-            ps.setInt(4, cliente.getTelefono());
+            ps.setString(4, cliente.getTelefono());
             ps.setInt(5, cliente.getMembresia());
             ps.execute();
             return true;
@@ -112,7 +112,7 @@ public class ClienteDAO implements IClienteDAO {
             ps = con.prepareStatement(sql);
             ps.setString(1, cliente.getNombre());
             ps.setString(2, cliente.getApellido());
-            ps.setInt(3, cliente.getTelefono());
+            ps.setString(3, cliente.getTelefono());
             ps.setInt(4, cliente.getMembresia());
             ps.setInt(5, cliente. getDni());
             ps.execute();
